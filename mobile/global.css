@@ -1,3 +1,100 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* iOS 26 Liquid Glass Effect - Global Styles for Web */
+:root {
+    --glass-blur: 40px;
+    --glass-saturation: 180%;
+    --glass-brightness: 1.1;
+}
+
+/* Liquid Glass Card Base */
+.liquid-glass {
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation)) brightness(var(--glass-brightness));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation)) brightness(var(--glass-brightness));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Light mode glass */
+.liquid-glass-light {
+    background: rgba(255, 255, 255, 0.65);
+    border: 1.5px solid rgba(255, 255, 255, 0.8);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* Dark mode glass */
+.liquid-glass-dark {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Liquid Glass Primary Button */
+.liquid-glass-primary {
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.9), rgba(88, 86, 214, 0.9));
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    box-shadow:
+        0 8px 24px rgba(0, 122, 255, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.liquid-glass-primary:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 12px 32px rgba(0, 122, 255, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Animated gradient orbs */
+@keyframes orbFloat {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(10px, -10px) scale(1.1);
+    }
+}
+
+@keyframes orbPulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.glass-orb {
+    animation: orbFloat 8s ease-in-out infinite, orbPulse 4s ease-in-out infinite;
+}
+
+.glass-orb-alt {
+    animation: orbFloat 8s ease-in-out infinite reverse, orbPulse 4s ease-in-out infinite 2s;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Remove tap highlight on mobile */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Better font rendering */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

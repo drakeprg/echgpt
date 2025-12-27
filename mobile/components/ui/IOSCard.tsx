@@ -1,10 +1,11 @@
 import React from "react";
-import { View, ViewStyle, useColorScheme } from "react-native";
+import { View, ViewStyle, useColorScheme, Platform } from "react-native";
+import { BlurView } from "expo-blur";
 
 interface IOSCardProps {
     children: React.ReactNode;
     style?: ViewStyle;
-    variant?: "default" | "elevated" | "outlined";
+    variant?: "default" | "elevated" | "outlined" | "glass";
 }
 
 export const IOSCard: React.FC<IOSCardProps> = ({
@@ -14,13 +15,28 @@ export const IOSCard: React.FC<IOSCardProps> = ({
 }) => {
     const colorScheme = useColorScheme();
     const isDark = colorScheme === "dark";
+    const isWeb = Platform.OS === "web";
 
     const getBackgroundColor = () => {
+        if (variant === "glass") {
+            return isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(255, 255, 255, 0.65)";
+        }
         return isDark ? "#2C2C2E" : "#FFFFFF";
     };
 
     const getVariantStyle = (): ViewStyle => {
         switch (variant) {
+            case "glass":
+                return {
+                    borderWidth: 1.5,
+                    borderColor: isDark
+                        ? "rgba(255, 255, 255, 0.12)"
+                        : "rgba(255, 255, 255, 0.9)",
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 8 },
+                    shadowOpacity: isDark ? 0.4 : 0.1,
+                    shadowRadius: 24,
+                };
             case "elevated":
                 return {
                     shadowColor: "#000",
@@ -52,6 +68,29 @@ export const IOSCard: React.FC<IOSCardProps> = ({
         ...getVariantStyle(),
         ...style,
     };
+
+    // For glass variant on web, add backdrop-filter
+    if (variant === "glass" && isWeb) {
+        const webGlassStyle = {
+            ...cardStyle,
+            backdropFilter: "blur(40px) saturate(180%) brightness(1.1)",
+            WebkitBackdropFilter: "blur(40px) saturate(180%) brightness(1.1)",
+        };
+        return <View style={webGlassStyle as any}>{children}</View>;
+    }
+
+    // For glass variant on native iOS/Android, use BlurView
+    if (variant === "glass") {
+        return (
+            <BlurView
+                intensity={40}
+                tint={isDark ? "dark" : "light"}
+                style={cardStyle}
+            >
+                {children}
+            </BlurView>
+        );
+    }
 
     return <View style={cardStyle}>{children}</View>;
 };

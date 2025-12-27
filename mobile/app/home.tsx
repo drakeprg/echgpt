@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import { useAppStore } from "../stores/appStore";
 
 const MAX_WIDTH = 480;
@@ -21,7 +22,7 @@ export default function HomeScreen() {
     const router = useRouter();
     const colorScheme = useColorScheme();
     const isDark = colorScheme === "dark";
-    const { width } = Dimensions.get("window");
+    const { width, height } = Dimensions.get("window");
     const isWeb = Platform.OS === "web";
 
     const {
@@ -37,12 +38,12 @@ export default function HomeScreen() {
 
     useEffect(() => {
         const initModel = async () => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 800));
             setModelReady(true);
             setInitializing(false);
             Animated.timing(fadeAnim, {
                 toValue: 1,
-                duration: 500,
+                duration: 600,
                 useNativeDriver: true,
             }).start();
         };
@@ -100,46 +101,60 @@ export default function HomeScreen() {
     };
 
     const textColor = isDark ? "#FFFFFF" : "#1C1C1E";
-    const secondaryTextColor = isDark ? "#98989D" : "#6C6C70";
-    const backgroundColor = isDark ? "#000000" : "#F2F2F7";
-    const cardBg = isDark ? "rgba(44, 44, 46, 0.8)" : "rgba(255, 255, 255, 0.9)";
-
-    const containerStyle = {
-        flex: 1,
-        backgroundColor,
-        alignItems: "center" as const,
-    };
+    const secondaryTextColor = isDark ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)";
 
     const contentWidth = isWeb ? Math.min(width, MAX_WIDTH) : width;
 
+    // iOS 26 gradient colors
+    const gradientColors: readonly [string, string, ...string[]] = isDark
+        ? ["#0A1628", "#0F2847", "#162D50", "#0A1628"]
+        : ["#F0F7FF", "#E0EFFF", "#D4E8FF", "#F0F7FF"];
+
+    // Glass card style
+    const glassStyle = {
+        backgroundColor: isDark
+            ? "rgba(255, 255, 255, 0.08)"
+            : "rgba(255, 255, 255, 0.7)",
+        borderWidth: 1.5,
+        borderColor: isDark
+            ? "rgba(255, 255, 255, 0.12)"
+            : "rgba(255, 255, 255, 0.9)",
+        shadowColor: isDark ? "#000" : "#000",
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: isDark ? 0.4 : 0.1,
+        shadowRadius: 24,
+    };
+
     if (initializing || isAnalyzing) {
         return (
-            <SafeAreaView style={containerStyle}>
-                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <LinearGradient colors={gradientColors} style={{ flex: 1 }}>
+                <SafeAreaView style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                     <View
-                        style={{
-                            width: 80,
-                            height: 80,
-                            borderRadius: 20,
-                            backgroundColor: "#007AFF",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            marginBottom: 20,
-                        }}
+                        style={[
+                            glassStyle,
+                            {
+                                width: 120,
+                                height: 120,
+                                borderRadius: 30,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                marginBottom: 24,
+                            },
+                        ]}
                     >
-                        <Text style={{ fontSize: 40 }}>🍄</Text>
+                        <Text style={{ fontSize: 50 }}>🍄</Text>
                     </View>
                     <ActivityIndicator size="large" color="#007AFF" />
-                    <Text style={{ marginTop: 16, color: secondaryTextColor, fontSize: 15 }}>
+                    <Text style={{ marginTop: 16, color: secondaryTextColor, fontSize: 16, fontWeight: "500" }}>
                         {initializing ? "Loading..." : "Analyzing..."}
                     </Text>
-                </View>
-            </SafeAreaView>
+                </SafeAreaView>
+            </LinearGradient>
         );
     }
 
-    // Modern Action Button Component
-    const ActionButton = ({
+    // Modern Glass Action Button
+    const GlassActionButton = ({
         icon,
         title,
         subtitle,
@@ -154,27 +169,34 @@ export default function HomeScreen() {
     }) => (
         <TouchableOpacity
             onPress={onPress}
-            activeOpacity={0.8}
+            activeOpacity={0.85}
             style={{
                 flexDirection: "row",
                 alignItems: "center",
-                backgroundColor: primary ? "#007AFF" : cardBg,
+                backgroundColor: primary
+                    ? "rgba(0, 122, 255, 0.9)"
+                    : (isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(255, 255, 255, 0.75)"),
                 padding: 20,
-                borderRadius: 16,
+                borderRadius: 20,
                 marginBottom: 12,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: isDark ? 0.3 : 0.08,
-                shadowRadius: 8,
-                elevation: 3,
+                borderWidth: 1.5,
+                borderColor: primary
+                    ? "rgba(255, 255, 255, 0.25)"
+                    : (isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(255, 255, 255, 0.9)"),
+                shadowColor: primary ? "#007AFF" : "#000",
+                shadowOffset: { width: 0, height: 6 },
+                shadowOpacity: primary ? 0.35 : (isDark ? 0.3 : 0.08),
+                shadowRadius: 16,
             }}
         >
             <View
                 style={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: 14,
-                    backgroundColor: primary ? "rgba(255,255,255,0.2)" : (isDark ? "#3A3A3C" : "#F2F2F7"),
+                    width: 52,
+                    height: 52,
+                    borderRadius: 16,
+                    backgroundColor: primary
+                        ? "rgba(255, 255, 255, 0.2)"
+                        : (isDark ? "rgba(0, 122, 255, 0.15)" : "rgba(0, 122, 255, 0.1)"),
                     alignItems: "center",
                     justifyContent: "center",
                 }}
@@ -198,8 +220,8 @@ export default function HomeScreen() {
                 <Text
                     style={{
                         fontSize: 13,
-                        color: primary ? "rgba(255,255,255,0.7)" : secondaryTextColor,
-                        marginTop: 2,
+                        color: primary ? "rgba(255, 255, 255, 0.7)" : secondaryTextColor,
+                        marginTop: 3,
                     }}
                 >
                     {subtitle}
@@ -207,166 +229,208 @@ export default function HomeScreen() {
             </View>
             <Ionicons
                 name="chevron-forward"
-                size={20}
-                color={primary ? "rgba(255,255,255,0.6)" : (isDark ? "#48484A" : "#C7C7CC")}
+                size={22}
+                color={primary ? "rgba(255, 255, 255, 0.6)" : (isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.2)")}
             />
         </TouchableOpacity>
     );
 
     return (
-        <SafeAreaView style={containerStyle}>
-            <Animated.View
+        <LinearGradient colors={gradientColors} style={{ flex: 1 }}>
+            {/* Decorative glass orbs */}
+            <View
                 style={{
-                    flex: 1,
-                    width: contentWidth,
-                    paddingHorizontal: 20,
-                    opacity: fadeAnim,
+                    position: "absolute",
+                    top: height * 0.05,
+                    right: -50,
+                    width: 180,
+                    height: 180,
+                    borderRadius: 90,
+                    backgroundColor: isDark ? "rgba(0, 122, 255, 0.1)" : "rgba(0, 122, 255, 0.08)",
                 }}
-            >
-                {/* Header */}
-                <View style={{ marginTop: 20, marginBottom: 32 }}>
-                    <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
-                        <Text style={{ fontSize: 40, marginRight: 12 }}>🍄</Text>
-                        <View>
+            />
+            <View
+                style={{
+                    position: "absolute",
+                    bottom: height * 0.15,
+                    left: -40,
+                    width: 120,
+                    height: 120,
+                    borderRadius: 60,
+                    backgroundColor: isDark ? "rgba(88, 86, 214, 0.12)" : "rgba(88, 86, 214, 0.06)",
+                }}
+            />
+
+            <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
+                <Animated.View
+                    style={{
+                        flex: 1,
+                        width: contentWidth,
+                        paddingHorizontal: 24,
+                        opacity: fadeAnim,
+                    }}
+                >
+                    {/* Header */}
+                    <View style={{ marginTop: Platform.OS === "web" ? 16 : 32, marginBottom: 28 }}>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <View
+                                style={[
+                                    glassStyle,
+                                    {
+                                        width: 56,
+                                        height: 56,
+                                        borderRadius: 16,
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        marginRight: 14,
+                                    },
+                                ]}
+                            >
+                                <Text style={{ fontSize: 32 }}>🍄</Text>
+                            </View>
+                            <View>
+                                <Text
+                                    style={{
+                                        fontSize: 28,
+                                        fontWeight: "800",
+                                        color: textColor,
+                                        letterSpacing: -0.5,
+                                    }}
+                                >
+                                    FungiGPT
+                                </Text>
+                                <Text
+                                    style={{
+                                        fontSize: 14,
+                                        color: secondaryTextColor,
+                                        marginTop: 2,
+                                    }}
+                                >
+                                    AI Skin Analyzer
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    {/* Hero Card - Liquid Glass */}
+                    <View
+                        style={[
+                            glassStyle,
+                            {
+                                borderRadius: 28,
+                                padding: 28,
+                                marginBottom: 24,
+                            },
+                        ]}
+                    >
+                        <View style={{ alignItems: "center" }}>
+                            <View
+                                style={{
+                                    width: 90,
+                                    height: 90,
+                                    borderRadius: 24,
+                                    backgroundColor: isDark ? "rgba(0, 122, 255, 0.15)" : "rgba(0, 122, 255, 0.1)",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    marginBottom: 20,
+                                }}
+                            >
+                                <Ionicons name="scan" size={44} color="#007AFF" />
+                            </View>
                             <Text
                                 style={{
-                                    fontSize: 28,
-                                    fontWeight: "800",
+                                    fontSize: 22,
+                                    fontWeight: "700",
                                     color: textColor,
-                                    letterSpacing: -0.5,
+                                    textAlign: "center",
                                 }}
                             >
-                                FungiGPT
+                                Analyze Your Skin
                             </Text>
                             <Text
                                 style={{
-                                    fontSize: 14,
+                                    fontSize: 15,
                                     color: secondaryTextColor,
-                                    marginTop: 2,
+                                    textAlign: "center",
+                                    marginTop: 10,
+                                    lineHeight: 22,
+                                    paddingHorizontal: 12,
                                 }}
                             >
-                                AI Skin Condition Analyzer
+                                Capture or select an image to identify fungal skin conditions instantly
                             </Text>
                         </View>
                     </View>
-                </View>
 
-                {/* Hero Card */}
-                <View
-                    style={{
-                        backgroundColor: isDark ? "#1C1C1E" : "#FFFFFF",
-                        borderRadius: 20,
-                        padding: 24,
-                        marginBottom: 24,
-                        shadowColor: "#000",
-                        shadowOffset: { width: 0, height: 4 },
-                        shadowOpacity: isDark ? 0.3 : 0.1,
-                        shadowRadius: 12,
-                    }}
-                >
-                    <View style={{ alignItems: "center" }}>
-                        <View
-                            style={{
-                                width: 100,
-                                height: 100,
-                                borderRadius: 25,
-                                backgroundColor: isDark ? "#2C2C2E" : "#E8F4F8",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                marginBottom: 16,
-                            }}
-                        >
-                            <Ionicons name="scan" size={48} color="#007AFF" />
-                        </View>
-                        <Text
-                            style={{
-                                fontSize: 20,
-                                fontWeight: "700",
-                                color: textColor,
-                                textAlign: "center",
-                            }}
-                        >
-                            Analyze Your Skin
-                        </Text>
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                color: secondaryTextColor,
-                                textAlign: "center",
-                                marginTop: 8,
-                                lineHeight: 20,
-                                paddingHorizontal: 16,
-                            }}
-                        >
-                            Take a photo or choose from gallery to identify fungal skin conditions instantly
-                        </Text>
-                    </View>
-                </View>
-
-                {/* Action Buttons */}
-                <ActionButton
-                    icon="camera"
-                    title="Take Photo"
-                    subtitle="Use camera to capture"
-                    onPress={() => pickImage("camera")}
-                    primary
-                />
-                <ActionButton
-                    icon="images"
-                    title="Choose from Gallery"
-                    subtitle="Select existing photo"
-                    onPress={() => pickImage("gallery")}
-                />
-
-                {/* Spacer */}
-                <View style={{ flex: 1 }} />
-
-                {/* Admin Link */}
-                <TouchableOpacity
-                    onPress={() => router.push("/admin")}
-                    style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        paddingVertical: 12,
-                        marginBottom: 8,
-                    }}
-                >
-                    <Ionicons name="settings-outline" size={18} color={secondaryTextColor} />
-                    <Text style={{ color: secondaryTextColor, fontSize: 14, marginLeft: 6 }}>
-                        Admin Dashboard
-                    </Text>
-                </TouchableOpacity>
-
-                {/* Disclaimer */}
-                <View
-                    style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        padding: 14,
-                        backgroundColor: isDark ? "#2C2C2E" : "#FEF7E6",
-                        borderRadius: 12,
-                        marginBottom: 16,
-                    }}
-                >
-                    <Ionicons
-                        name="information-circle"
-                        size={20}
-                        color={isDark ? "#FFD60A" : "#B8860B"}
+                    {/* Action Buttons */}
+                    <GlassActionButton
+                        icon="camera"
+                        title="Take Photo"
+                        subtitle="Use camera to capture"
+                        onPress={() => pickImage("camera")}
+                        primary
                     />
-                    <Text
+                    <GlassActionButton
+                        icon="images"
+                        title="Choose from Gallery"
+                        subtitle="Select existing photo"
+                        onPress={() => pickImage("gallery")}
+                    />
+
+                    {/* Spacer */}
+                    <View style={{ flex: 1 }} />
+
+                    {/* Admin Link */}
+                    <TouchableOpacity
+                        onPress={() => router.push("/admin")}
                         style={{
-                            flex: 1,
-                            fontSize: 12,
-                            color: isDark ? "#FFD60A" : "#8B6914",
-                            marginLeft: 10,
-                            lineHeight: 16,
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            paddingVertical: 14,
+                            marginBottom: 10,
                         }}
                     >
-                        For educational purposes only. Always consult a healthcare professional.
-                    </Text>
-                </View>
-            </Animated.View>
-        </SafeAreaView>
+                        <Ionicons name="settings-outline" size={18} color={secondaryTextColor} />
+                        <Text style={{ color: secondaryTextColor, fontSize: 14, marginLeft: 8, fontWeight: "500" }}>
+                            Admin Dashboard
+                        </Text>
+                    </TouchableOpacity>
+
+                    {/* Disclaimer - Glass Style */}
+                    <View
+                        style={[
+                            glassStyle,
+                            {
+                                flexDirection: "row",
+                                alignItems: "center",
+                                padding: 16,
+                                borderRadius: 16,
+                                marginBottom: 20,
+                                backgroundColor: isDark ? "rgba(255, 214, 10, 0.08)" : "rgba(255, 204, 0, 0.12)",
+                                borderColor: isDark ? "rgba(255, 214, 10, 0.2)" : "rgba(255, 204, 0, 0.3)",
+                            },
+                        ]}
+                    >
+                        <Ionicons
+                            name="information-circle"
+                            size={22}
+                            color={isDark ? "#FFD60A" : "#946C00"}
+                        />
+                        <Text
+                            style={{
+                                flex: 1,
+                                fontSize: 13,
+                                color: isDark ? "rgba(255, 214, 10, 0.9)" : "#8B6914",
+                                marginLeft: 12,
+                                lineHeight: 18,
+                            }}
+                        >
+                            For educational purposes only. Consult a healthcare professional.
+                        </Text>
+                    </View>
+                </Animated.View>
+            </SafeAreaView>
+        </LinearGradient>
     );
 }
