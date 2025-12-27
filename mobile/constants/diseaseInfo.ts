@@ -1,0 +1,162 @@
+// Disease information data
+export interface DiseaseInfo {
+    id: string;
+    name: string;
+    description: string;
+    symptoms: string[];
+    causes: string[];
+    treatment: string[];
+    whenToSeeDoctor: string[];
+    severity: "mild" | "mild_to_moderate" | "moderate" | "severe";
+    color: string;
+}
+
+export const diseaseInfo: Record<string, DiseaseInfo> = {
+    candidiasis: {
+        id: "candidiasis",
+        name: "Candidiasis",
+        description:
+            "A fungal infection caused by Candida yeast, commonly affecting moist areas of the skin such as armpits, groin, and skin folds.",
+        symptoms: [
+            "Red, itchy rash",
+            "Skin irritation and burning",
+            "White patches or coating",
+            "Scaling or cracking skin",
+            "Pustules at rash edges",
+        ],
+        causes: [
+            "Warm, moist environments",
+            "Weakened immune system",
+            "Antibiotic use",
+            "Diabetes",
+            "Tight clothing",
+        ],
+        treatment: [
+            "Antifungal creams (clotrimazole, miconazole)",
+            "Keep affected area clean and dry",
+            "Wear loose, breathable clothing",
+            "Oral antifungal medication for severe cases",
+        ],
+        whenToSeeDoctor: [
+            "Symptoms don't improve after 2 weeks of treatment",
+            "Infection spreads or worsens",
+            "You have a weakened immune system",
+            "Recurrent infections",
+        ],
+        severity: "mild_to_moderate",
+        color: "#FF6B6B",
+    },
+    tinea_corporis: {
+        id: "tinea_corporis",
+        name: "Tinea Corporis (Ringworm)",
+        description:
+            "A fungal infection of the body skin caused by dermatophytes. Despite its name, it's not caused by a worm but creates characteristic ring-shaped rashes.",
+        symptoms: [
+            "Circular, ring-shaped rash",
+            "Red, scaly border",
+            "Clear or normal skin in center",
+            "Itching and discomfort",
+            "Multiple overlapping rings",
+        ],
+        causes: [
+            "Direct contact with infected person/animal",
+            "Sharing towels or clothing",
+            "Contact with contaminated surfaces",
+            "Warm, humid environments",
+            "Excessive sweating",
+        ],
+        treatment: [
+            "Over-the-counter antifungal creams",
+            "Apply cream beyond the rash edges",
+            "Continue treatment 1-2 weeks after clearing",
+            "Oral antifungals for widespread infection",
+        ],
+        whenToSeeDoctor: [
+            "Rash doesn't improve after 2 weeks",
+            "Infection covers large areas",
+            "Signs of bacterial infection (pus, fever)",
+            "Scalp involvement with hair loss",
+        ],
+        severity: "mild_to_moderate",
+        color: "#4ECDC4",
+    },
+    tinea_pedis: {
+        id: "tinea_pedis",
+        name: "Tinea Pedis (Athlete's Foot)",
+        description:
+            "A common fungal infection affecting the feet, particularly between the toes. Very contagious and often contracted in shared spaces.",
+        symptoms: [
+            "Itching and burning between toes",
+            "Cracked, peeling skin",
+            "Blisters that may ooze",
+            "Dry, scaly skin on soles",
+            "Unpleasant foot odor",
+        ],
+        causes: [
+            "Walking barefoot in public places",
+            "Sweaty feet in tight shoes",
+            "Sharing shoes or towels",
+            "Damp socks and footwear",
+            "Poor foot hygiene",
+        ],
+        treatment: [
+            "Antifungal powders, sprays, or creams",
+            "Keep feet clean and completely dry",
+            "Wear moisture-wicking socks",
+            "Change socks daily",
+            "Alternate shoes to let them dry",
+        ],
+        whenToSeeDoctor: [
+            "Infection doesn't clear in 2-4 weeks",
+            "Redness spreading up the leg",
+            "Fever or signs of infection",
+            "You have diabetes",
+            "Severe cracking or blisters",
+        ],
+        severity: "mild",
+        color: "#45B7D1",
+    },
+    tinea_versicolor: {
+        id: "tinea_versicolor",
+        name: "Tinea Versicolor",
+        description:
+            "A fungal infection caused by Malassezia yeast that naturally lives on skin. It causes discolored patches and is more common in hot, humid climates.",
+        symptoms: [
+            "Discolored skin patches (lighter or darker)",
+            "Patches may be white, pink, red, or brown",
+            "Mild itching, especially when hot",
+            "Scaly texture on patches",
+            "Patches that don't tan evenly",
+        ],
+        causes: [
+            "Hot, humid weather",
+            "Oily skin",
+            "Hormonal changes",
+            "Weakened immune system",
+            "Excessive sweating",
+        ],
+        treatment: [
+            "Antifungal shampoos (selenium sulfide, ketoconazole)",
+            "Antifungal creams or lotions",
+            "Oral antifungal medication",
+            "Regular treatment in summer months",
+            "Skin color may take months to normalize",
+        ],
+        whenToSeeDoctor: [
+            "Over-the-counter treatments don't work",
+            "Large areas of skin affected",
+            "Frequent recurrence",
+            "Significant cosmetic concern",
+        ],
+        severity: "mild",
+        color: "#96CEB4",
+    },
+};
+
+export const getDiseaseInfo = (id: string): DiseaseInfo | undefined => {
+    return diseaseInfo[id];
+};
+
+export const getAllDiseases = (): DiseaseInfo[] => {
+    return Object.values(diseaseInfo);
+};

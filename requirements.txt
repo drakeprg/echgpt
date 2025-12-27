@@ -1,0 +1,17 @@
+# FungiGPT - Requirements
+
+# Core ML
+tensorflow>=2.13.0
+numpy>=1.23.0
+pillow>=9.0.0
+matplotlib>=3.7.0
+scikit-learn>=1.2.0
+
+# Admin API
+fastapi>=0.104.0
+uvicorn>=0.24.0
+python-multipart>=0.0.6
+
+# Utilities
+tqdm>=4.65.0
+python-dotenv>=1.0.0

@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "FungiGPT",
+    "slug": "fungi-gpt",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "scheme": "fungigpt",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#007AFF"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fungigpt.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "FungiGPT needs camera access to capture skin condition photos for analysis.",
+        "NSPhotoLibraryUsageDescription": "FungiGPT needs photo library access to select skin condition photos for analysis."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#007AFF"
+      },
+      "package": "com.fungigpt.app",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "FungiGPT needs photo library access to analyze skin conditions.",
+          "cameraPermission": "FungiGPT needs camera access to capture photos for analysis."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
